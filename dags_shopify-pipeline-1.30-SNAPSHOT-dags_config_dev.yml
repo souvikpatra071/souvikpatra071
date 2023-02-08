@@ -1,0 +1,230 @@
+schedule:
+  domo: "None"
+  sharepoint_ecommerce: "None"
+
+workflow_project: umg-workflow-dev
+bq_project: umg-audience-data-workspace
+gs_raw_bucket: gs://umg-audience-dev/
+shopify_source_path : source/shopify.batch.v1_0/
+shopify_source_path_v2 : source/shopify.batch.v2_0/
+shopify_source_path_v2_hourly : source/shopify.batch.v2_0_hourly/
+gs_staging_bucket: gs://umg-datalake-staging-dev/
+vault_shopify_path: datatech-prod/data-provider/shopify/api
+shopify_sale_input_path: 'gs://umg-datalake-marketing-partner-dev/source/shopify.v1.0/shopify-sale-source-input/'
+shopify_sale_input_path_v2: 'gs://umg-datalake-marketing-partner-dev/source/shopify.v2.0/shopify-sale-source-input/'
+shopify_ecomm_sale_input_path_v2: 'gs://umg-datalake-marketing-partner-dev/source/shopify.v2.0/shopify-ecomm-sale-source-input/'
+shopify_sale_output_path: 'gs://umg-datalake-marketing-partner-dev/source/shopify.v1.0/shopify-sale-source-output/'
+shopify_sale_output_path_v2: 'gs://umg-datalake-marketing-partner-dev/source/shopify.v2.0/shopify-sale-source-output/'
+shopify_ecomm_sale_output_path_v2: 'gs://umg-datalake-marketing-partner-dev/source/shopify.v2.0/shopify-ecomm-sale-source-output/'
+shopify_hourly_sale_input_path: 'gs://umg-datalake-marketing-partner-dev/source/shopify_hourly_sale.v1.0/shopify-sale-source-input/'
+shopify_hourly_sale_output_path: 'gs://umg-datalake-marketing-partner-dev/source/shopify_hourly_sale.v1.0/shopify-sale-source-output/'
+dataset: shopify_source
+shopify_source_path_v3 : source/shopify.batch.v3_0/
+bq_dataset: ecommerce_reporting
+
+bq_source: umg-audience-data-workspace
+uat_project: umg-audience-data-workspace
+staging_dataset: data_staging
+
+shopify_unified_project: 'umg-audience-data-workspace'
+shopify_unified_dataset: 'shopify_unified'
+shopify_unified_task_list: ['shopify_aggregate_orders_count', 'shopify_collects', 'shopify_customers', 'shopify_customers_addresses', 'shopify_disputes',
+  'shopify_events', 'shopify_gift_cards', 'shopify_inventory_items', 'shopify_inventory_levels', 'shopify_locations', 'shopify_meta_product_types',
+  'shopify_metafields', 'shopify_online_store_themes', 'shopify_orders', 'shopify_orders_billing_address', 'shopify_orders_client_details',
+  'shopify_orders_discount_applications', 'shopify_orders_discount_codes', 'shopify_orders_fulfillments', 'shopify_orders_fulfillments_line_items',
+  'shopify_orders_fulfillments_line_items_discount_allocations', 'shopify_orders_fulfillments_line_items_properties',
+  'shopify_orders_fulfillments_line_items_tax_lines', 'shopify_orders_fulfillments_receipts', 'shopify_orders_line_items',
+  'shopify_orders_line_items_discount_allocations', 'shopify_orders_line_items_properties', 'shopify_orders_line_items_tax_lines',
+  'shopify_orders_note_attributes', 'shopify_orders_payment_details', 'shopify_orders_refunds', 'shopify_orders_refunds_order_adjustments',
+  'shopify_orders_refunds_refund_line_items', 'shopify_orders_refunds_transactions', 'shopify_orders_refunds_transactions_payment_details',
+  'shopify_orders_refunds_transactions_receipts', 'shopify_orders_risks', 'shopify_orders_shipping_address', 'shopify_orders_shipping_lines',
+  'shopify_orders_shipping_lines_taxline', 'shopify_orders_tax_lines', 'shopify_orders_transactions', 'shopify_orders_transactions_payment_details',
+  'shopify_orders_transactions_receipts', 'shopify_pages', 'shopify_payout_transactions', 'shopify_payouts', 'shopify_payouts_summaries',
+  'shopify_price_rules', 'shopify_product_metafields', 'shopify_products', 'shopify_products_images', 'shopify_products_options',
+  'shopify_products_variants', 'shopify_sales', 'shopify_smart_collections', 'shopify_smart_collections_images',
+  'shopify_smart_collections_rules', 'shopify_users', 'shopify_online_store_assets_settings', 'shopify_online_store_assets']
+
+shopify_unified_daily_task_list: ['shopify_collects', 'shopify_customers', 'shopify_customers_addresses', 'shopify_disputes',
+                            'shopify_events', 'shopify_inventory_items', 'shopify_inventory_levels', 'shopify_locations', 'shopify_meta_product_types',
+                            'shopify_metafields', 'shopify_orders_risks', 'shopify_pages', 'shopify_payout_transactions', 'shopify_payouts', 'shopify_payouts_summaries',
+                            'shopify_price_rules', 'shopify_product_metafields', 'shopify_products', 'shopify_products_images', 'shopify_products_options',
+                            'shopify_products_variants', 'shopify_smart_collections', 'shopify_smart_collections_images',
+                            'shopify_smart_collections_rules', 'shopify_users', 'shopify_online_store_assets_settings', 'shopify_online_store_assets']
+
+shopify_unified_hourly_task_list: ['shopify_aggregate_orders_count','shopify_gift_cards','shopify_online_store_themes','shopify_orders',
+                                   'shopify_orders_billing_address','shopify_orders_client_details','shopify_orders_discount_applications',
+                                   'shopify_orders_discount_codes','shopify_orders_fulfillments','shopify_orders_fulfillments_line_items',
+                                   'shopify_orders_fulfillments_line_items_discount_allocations','shopify_orders_fulfillments_line_items_properties',
+                                   'shopify_orders_fulfillments_line_items_tax_lines','shopify_orders_fulfillments_receipts','shopify_orders_line_items',
+                                   'shopify_orders_line_items_discount_allocations','shopify_orders_line_items_properties','shopify_orders_line_items_tax_lines',
+                                   'shopify_orders_note_attributes','shopify_orders_payment_details','shopify_orders_refunds','shopify_orders_refunds_order_adjustments',
+                                   'shopify_orders_refunds_refund_line_items','shopify_orders_refunds_transactions','shopify_orders_refunds_transactions_payment_details',
+                                   'shopify_orders_refunds_transactions_receipts','shopify_orders_shipping_address','shopify_orders_shipping_lines',
+                                   'shopify_orders_shipping_lines_taxline','shopify_orders_tax_lines','shopify_orders_transactions','shopify_orders_transactions_payment_details',
+                                   'shopify_orders_transactions_receipts' ]
+
+shopify_unified_daily_full_load: False
+
+application_id: 5d0fa446-2202-45c3-a759-669089cbe103
+sharepoint_url: https://universalmusicgroup.sharepoint.com/sites/data-engineering
+sharepoint_access_path: Shared%20Documents/Ecommerce%20File%20Share
+audience_project: umg-audience-data
+audience_dataset: ecommerce
+
+
+bucket_name: umg-datalake-marketing-partner-dev
+shopify_ecomm_input_path: 'source/shopify.v1.0/shopify-ecomm-source-input/'
+input_path: 'gs://umg-datalake-marketing-partner-dev/source/shopify.v1.0/shopify-ecomm-source-input/'
+snap_version: 1.2.3167-SNAPSHOT
+table_name: [views_unfulfilled_unag, views_unfulfilled_st]
+
+views_unfulfilled_unag:
+  file_name: unfulfilled_unag_
+
+views_unfulfilled_st:
+  file_name: unfulfilled_st_
+
+shopify_report_project: umg-audience-data-workspace
+shopify_report_dataset: shopify_chart_reports
+
+schedule_interval:
+  Sale_Hourly: "None"
+  hourly: "None"
+  daily: "None"
+  ecomm: "None"
+  unified: "None"
+  unified_daily: "None"
+  unified_hourly: "0 * * * *"
+  store_metadata_load: "None"
+  products_download: "None"
+  ecommerce_reporting: "None"
+  daily_bulk_download: "None"
+  daily_bulk_operation: "None"
+  daily_bulk_download_v2: "None"
+  shopify_ecommerce_hourly: "None"
+  bulk_operation_all: "30 8 * * *"
+  bulk_download_all: "None"
+  count_validation: "None"
+  daily_download_v2: "None"
+
+
+notification_email: [ "ratul.banerjee@umusic.com" ]
+email_on_retry: False
+email_on_failure: False
+
+shopify_unified_daily:
+  notification_email: ["vmgautham.nair@umusic.com"]
+  shopify_unified_dataset: 'shopify_unified_update'
+
+shopify_unified_hourly:
+  notification_email: ["ratul.banerjee@umusic.com"]
+  shopify_unified_dataset: 'shopify_unified_update'
+
+bq_project_domo_reporting: ['umg-source-dev', 'umg-audience-data-workspace']
+bq_dataset_domo_reporting: ['microstrategy_ecommerce_reporting', 'ecommerce']
+shopify_domo_reporting_tasks: ['shopify_campaigntags', 'shopify_promisedates', 'shopify_repeating_customers', 'shopify_sales', 'temp_ecommrpt_shopify_ofli', 'temp_ecommrpt_shopify_olip', 'temp_ecommrpt_shopify_pi', 'temp_ecommrpt_shopify_prod_2', 'temp_ecommrpt_shopify_refunds', 'temp_ecommrpt_shopify_upsells']
+domo_auth_url: https://api.domo.com/oauth/token
+domo_grant_type: client_credentials
+domo_job_base_url: https://api.domo.com/v1/streams/
+domo_job_action: /executions
+ecommrpt_shopify_unloadconnector_base_job_id: "8298"
+ecommrpt_shopify_ga_combined_unlc_base_job_id: "8298"
+domo_gcp_role_name: data-provider-nonprod-umbi-domo-role
+domo_vault_path: datatech/nonprod/data-provider/partner/umbi/domo/api
+
+bq_shopify_dataset: ecommerce_reporting
+report_name: shopify_hourly_report
+bq_shopify_orders_table: shopify_orders
+bq_shopify_orders_table_temp: shopify_orders_temp
+bq_shopify_order_transactions_table: shopify_order_transactions
+bq_shopify_order_transactions_table_temp: shopify_order_transactions_temp
+bq_shopify_product_metafields_table: product_metafields
+bq_shopify_product_table: shopify_products
+bq_shopify_product_table_temp: shopify_products_temp
+bq_shopify_shops: shopify_shops
+bq_shopify_sales_table: shopify_sales
+shopify_ecomm_reporting_dataset: ecommerce_reporting
+
+shopify_metadata_load:
+  bq_project: umg-source-dev
+  bq_dataset: shopify
+  bq_table: store_metadata_load
+  gs_staging_bucket: gs://umg-datalake-staging-dev/
+  gs_path: staging/shopify/store_metadata/report_date=
+  file_prefix: shopify_store_metadata_load_
+shopify_vault_role: elt-shopify-nonprod
+shopify_vault_path: datatech/prod/data-provider/shopify/api/
+shopify_vault_service_account: svc-vault-elt-shopify-nonprod@umg-workflow-dev.iam.gserviceaccount.com
+shopify_ecommerce_reporting: [shopify_disputes,shopify_gift_cards,shopify_inventory_items,shopify_inventory_levels,shopify_pages,shopify_price_rules,shopify_users]
+order_metafields_apis_to_fetch: brantley-gilbert-official.myshopify.com,umg-mexico.myshopify.com
+
+shopify_reiden_pii_dataset: shopify_reidentification
+shopify_reiden_pii_table: shopify_customer_pii
+
+shopify_products_download:
+  gs_raw_bucket: gs://umg-datalake-staging-dev/
+  outputPath: source/shopify/products_download/report_date={}
+  apisToSkip: ''
+  reportPath: source/shopify/products_download/report_date={}
+  bq_project: umg-audience-data-workspace
+  bq_dataset: shopify_source
+  products_table: products_batch
+  notification_email: [ "madhurya.malladi@umusic.com" ]
+  bq_ecomm_reporting_dataset: ecommerce_reporting
+  bq_ecomm_shopify_products_temp: shopify_products_temp
+  bq_ecomm_shopify_products: shopify_products
+
+products_BQSyncFlag: "true"
+batch_hourly_BQSyncFlag: "true"
+batch_daily_BQSyncFlag: "true"
+daily_v2_BQSyncFlag: "true"
+productmetadata_bulk_download_BQSyncFlag: "true"
+productmetadata_bulk_BQSyncFlag: "true"
+bulk_download_all: "true"
+bulk_operation_all: "true"
+
+
+bulk_task: ["orders", "customers", "collections"]
+
+orders:
+  bulk_mutation_response_table: order_bulk_mutation_response
+  metafields_batch_bulk_table: order_metafields_batch_bulk
+  bulk_query_response_table: order_bulk_query_response
+
+
+customers:
+  bulk_mutation_response_table: customer_bulk_mutation_response
+  metafields_batch_bulk_table: customer_metafields_batch_bulk
+  bulk_query_response_table: customer_bulk_query_response
+
+collections:
+  bulk_mutation_response_table: collection_bulk_mutation_response
+  metafields_batch_bulk_table: collection_metafields_batch_bulk
+  bulk_query_response_table: collection_bulk_query_response
+
+#DAT 4055 changes.
+
+shopify_count_validation:
+  notification_email: [ "vmgautham.nair@umusic.com" ]
+  gs_raw_bucket: gs://umg-datalake-staging-dev/
+  outputPath: source/shopify/count_validation/report_date={}
+  reportPath: source/shopify/count_validation/report_date={}
+  BQSyncFlag: "true"
+  bq_project: umg-source-dev
+  bq_dataset: gautham_workspace
+  counts_table: count_validation
+  error_table: count_validation_api_errors
+
+#DAT 4055 changes end.
+
+shopify_daily_download_v2:
+  gs_raw_bucket: gs://umg-datalake-staging-dev/
+  outputPath: source/shopify_daily_v2/report_date={}
+  apisToSkip: ''
+  reportPath: source/shopify_daily_v2/report_date={}
+  bq_project: umg-source-dev
+  bq_dataset: shopify_source
+  customers_table: customers_batch_v2
+  notification_email: [ "madhurya.malladi@umusic.com" ]
+
+
