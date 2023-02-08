@@ -34,7 +34,7 @@ default_args = {
 }
 
 with models.DAG(
-        config.dag_name('batch_hourly'),
+        config.dag_name('batch_hourly_backfill'),
         catchup=True,
         max_active_runs=3,
         schedule_interval= None if config.get('schedule_interval')['hourly'] == 'None' else config.get('schedule_interval')['hourly'],
@@ -57,8 +57,8 @@ with models.DAG(
             'labels': config.labels(),
             'inputPath': '',
             'outputPath': config.get('gs_raw_bucket') + 'source/shopify.batch.v2_0_hourly/report_date={{ts_nodash}}/batch1/',
-            'startDate': '{{ts}}',
-            'endDate': '{{cur_ts(execution_date)}}',
+            'startDate': "{{var.value.backfill_start_date}}",
+            'endDate': "{{var.value.backfill_end_date}}",
             'workerMachineType': 'n1-standard-2',
             'numWorkers': '100',
             'maxNumWorkers': '200',
@@ -71,7 +71,8 @@ with models.DAG(
             'frequency': 'hourly',
             'apiVersion': "{{var.value.shopify_api_version}}",
             'vaultServiceAccount': config.get('shopify_vault_service_account'),
-            'BQSyncFlag': config.get('batch_hourly_BQSyncFlag')
+            'BQSyncFlag': config.get('batch_hourly_BQSyncFlag'),
+            'backfillShop': "{{var.value.backfill_shop}}"
         },
         retries=5,
         dag=dag)
@@ -88,8 +89,8 @@ with models.DAG(
             'labels': config.labels(),
             'inputPath': config.get('gs_raw_bucket') + 'source/shopify.batch.v2_0_hourly/report_date={{ts_nodash}}/batch1/next_batch/*.json',
             'outputPath': config.get('gs_raw_bucket') + 'source/shopify.batch.v2_0_hourly/report_date={{ts_nodash}}/batch2/',
-            'startDate': '{{ts}}',
-            'endDate': '{{cur_ts(execution_date)}}',
+            'startDate': "{{var.value.backfill_start_date}}",
+            'endDate': "{{var.value.backfill_end_date}}",
             'workerMachineType': 'n1-standard-2',
             'numWorkers': '100',
             'maxNumWorkers': '200',
@@ -102,7 +103,8 @@ with models.DAG(
             'frequency': 'hourly',
             'apiVersion': "{{var.value.shopify_api_version}}",
             'vaultServiceAccount': config.get('shopify_vault_service_account'),
-            'BQSyncFlag': config.get('batch_hourly_BQSyncFlag')
+            'BQSyncFlag': config.get('batch_hourly_BQSyncFlag'),
+            'backfillShop': "{{var.value.backfill_shop}}"
         },
         retries=5,
         dag=dag)
@@ -118,8 +120,8 @@ with models.DAG(
             'labels': config.labels(),
             'inputPath': config.get('gs_raw_bucket') + 'source/shopify.batch.v2_0_hourly/report_date={{ts_nodash}}/batch1/next_batch_1/*.json',
             'outputPath': config.get('gs_raw_bucket') + 'source/shopify.batch.v2_0_hourly/report_date={{ts_nodash}}/batch3/',
-            'startDate': '{{ts}}',
-            'endDate': '{{cur_ts(execution_date)}}',
+            'startDate': "{{var.value.backfill_start_date}}",
+            'endDate': "{{var.value.backfill_end_date}}",
             'workerMachineType': 'n1-standard-2',
             'numWorkers': '10',
             'maxNumWorkers': '10',
@@ -132,7 +134,8 @@ with models.DAG(
             'frequency': 'hourly',
             'apiVersion': "{{var.value.shopify_api_version}}",
             'vaultServiceAccount': config.get('shopify_vault_service_account'),
-            'BQSyncFlag': config.get('batch_hourly_BQSyncFlag')
+            'BQSyncFlag': config.get('batch_hourly_BQSyncFlag'),
+            'backfillShop': "{{var.value.backfill_shop}}"
         },
         retries=5,
         dag=dag)
@@ -148,8 +151,8 @@ with models.DAG(
             'labels': config.labels(),
             'inputPath': config.get('gs_raw_bucket') + 'source/shopify.batch.v2_0_hourly/report_date={{ts_nodash}}/batch1/next_batch_2/*.json',
             'outputPath': config.get('gs_raw_bucket') + 'source/shopify.batch.v2_0_hourly/report_date={{ts_nodash}}/batch4/',
-            'startDate': '{{ts}}',
-            'endDate': '{{cur_ts(execution_date)}}',
+            'startDate': "{{var.value.backfill_start_date}}",
+            'endDate': "{{var.value.backfill_end_date}}",
             'workerMachineType': 'n1-standard-2',
             'numWorkers': '10',
             'maxNumWorkers': '10',
@@ -162,7 +165,8 @@ with models.DAG(
             'frequency': 'hourly',
             'apiVersion': "{{var.value.shopify_api_version}}",
             'vaultServiceAccount': config.get('shopify_vault_service_account'),
-            'BQSyncFlag': config.get('batch_hourly_BQSyncFlag')
+            'BQSyncFlag': config.get('batch_hourly_BQSyncFlag'),
+            'backfillShop': "{{var.value.backfill_shop}}",
         },
         retries=5,
         dag=dag)
