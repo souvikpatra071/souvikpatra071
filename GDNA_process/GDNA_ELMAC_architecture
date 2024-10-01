@@ -1,0 +1,577 @@
+
+
+Onboarding Document
+
+
+
+Document Version History
+Version
+Amendment
+Amended By
+Date
+1.0
+AMGEN Onboarding Document
+Muthukumar.M
+
+
+1.2
+AMGEN Onboarding Document
+Priya Ravindran
+
+
+1.3
+AMGEN Onboarding Document
+Priya Ravindran
+
+
+2.0
+AMGEN Onboarding Document
+Sai Sandhya S
+
+
+
+
+Approvers
+Name
+Role
+Signature
+Date
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Reviewers
+Name
+Role
+Signature
+Date
+Karthikeyan D
+Technical Lead
+
+
+
+
+Karthik Narayan
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Table of Contents
+
+1.	Introduction	4
+2.	GDnA System	4
+2.1.	GDnA Architecture	4
+2.2.	Data Sources for GDnA	5
+2.3.	GDnA Process	6
+2.4.	Data Analytics	11
+2.5.	Continuous Development / Continuous Integration	12
+3.	Sales Sprint Action	13
+4.	EU/MVP – DAG & Job Details	13
+5.	Tools Required & Key Activities	14
+5.1.	Requirement Gathering	14
+5.2.	Development	15
+5.3.	UAT	18
+5.4.	Production	18
+6.	Additional Resources	18
+
+
+
+Introduction
+AMGEN is a Biotechnology major, which specializes in Biologics manufacturing, focusing on specific therapeutic areas such as cardiovascular disease, oncology, bone health, neuroscience, nephrology, and inflammation. More information on Amgen brands can be found in the Appendix section of this document.
+Although AMGEN is aiming at rapid growth globally, the company’s major sales hub remains the US. As a direct result, the amount of data to be kept track of from other geographical regions is considerably lesser when compared to the US.
+Based on the above reasoning, the company has demarcated its Data and Analytics platform into two: 
+iDnA – An ‘Integrated Data and Analytics’ system which focuses solely on the US market
+
+GDnA – A ‘Global Data and Analytics’ system which serves as the platform for the other, non-US geographies
+The DnA platform was established to reduce costs, maintain all the information in a central data lake and to allow the client’s top management to view the required data easily.
+Presently, both systems are used to onboard AMGEN’s sales-related data for the respective geographies, following which the data is analyzed. The insights gained through the analysis help in planning the consecutive sales cycles for the company.
+GDnA System
+The GDnA system focuses on onboarding the sales-related data of non-US regions. These regions are grouped into the following categories based on geographical proximity:
+
+JAPAC – Japan and Asia Pacific
+EU – European countries
+ICON – Canada, Mexico, 			ELMAC	
+Central America, South America and Africa
+
+
+ELMAC Merge
+The EU and ICON regions are in the process of being merged together to from one region: ELMAC.
+Previously, EU and ICON data were loaded to the business layers of EU and ICON respectively. As a part of ELMAC Merge, ICON data is being onboarded to EU Business Layer. The onboarding process includes ICON data being synchronized with the EU data’s existing business logic. To preserve the existing ICON Business layer until the ELMAC Merge process is complete, extra columns (marked ‘_old’) are created to hold ICON data with ICON’s old logic. 
+Once the onboarding process is complete, the EU business layer will be renamed as ELMAC business layer and the ICON Business layer will be decommissioned. The extra columns (‘_old’) created during the onboarding process will also be deleted once the onboarding process is complete. 
+The end result will contain only the ELMAC Business layer in place of ICON and EU Business layers, with data in EU logic.
+GDnA Architecture
+The architecture of the GDnA system on a high level is presented in the following picture:
+
+Data Sources for GDnA
+The data to be loaded onto the GDnA system is obtained from the following 3 major sources: 
+S.No.
+Source
+Type of Data Received
+Examples
+1.
+Master Data Management (MDM)
+a) Customer Information
+Doctors, Hospitals, Clinics, Pharmacies, Distributors 
+b) Product Information
+(Amgen and Competitor Products) Active Pharmaceutical Ingredients (API), Clinical Trial dates, FDA Approval dates, Composition
+c) Territory and Geography Information
+Country (Highest level of geography)
+Region (Level below country)
+BRICK1 (Similar to a state)
+BRICK2 (Similar to a city)
+BRICK3 (Similar to an area)
+Territory: A group of BRICKS tagged to one Sales Representative
+2.
+Multi-Channel Marketing (MCM)
+a) Marketing Information
+Marketing activities undertaken such as email campaigns, free/sample products to Doctors, Feedback received on products
+3.
+Sales
+a) To-the-Market Information (TTM)
+AMGEN products’ sales data, which is tracked via their in-house SAP system
+b) In-the-Market Information (ITM)
+Competitor products’ sales data, which is obtained through third-party organizations
+
+
+Note: The term ‘MCM’ is interchangeably used with ‘VEEVA’ across geographies. VEEVA is a customized Salesforce system used for Pharmaceutical marketing activities. 
+The TTM data, obtained directly from AMGEN, is highly accurate. However, the ITM data is obtained from service providers such as IQVIA. Hence, the ITM data:
+i) May not have the same level of accuracy
+ii) May contain data of different levels of granularity (details such as daily, weekly, monthly, country level, BRICK level, customer level) depending on the third-party service provider used in that geography. 
+GDnA Process
+Throughout the GDnA process, at several instances, Audit Tables are used. These tables facilitate the smooth running of the process and are listed below:
+S. No.
+Audit Table
+Purpose
+1
+Configuration Master
+Contains the details such as Source Path,  Landing Path, Archive location, Frequency of file sourcing, format of file, which target table it should be moved to, which stage table the file is moved to, and which view the file is ultimately loaded to, for each onboarded country.
+2
+Parent Batch Process
+Contains the details of the start time and end time of each batch process (from stage to T1). 
+Also provides a completion status of each batch process; if any errors/failures occur, they are recorded in the error log.
+3
+File DQ Rules
+Contains a list of file quality checks such as null check, numeric check, valid value checks, and date format check, which will be applied at the File Quality Check step in the process.  The File Quality Check is performed before the data is processed. This step checks if the file data is in the correct format.
+4
+File Process Log
+Contains a list of all processed files names, along with the process date. Before processing a file, a check is made to ensure the file name is not present in the File Process Log. If the file name is not present, the file is processed.
+If the file name is present in the File Process log, then the file has already been processed, and the file is skipped.
+5
+Pre T1 Configuration
+Contains a list of queries required to load source file data from Stage to Pre-T1. The source data may be loaded directly or transformation logic(s) may be applied on the stage table data using the queries in this table. 
+6
+DNA Outbound Configuration
+Contains a list of queries required to generate the Inbound file, and the target locations (SFTP, S3 and email) in which the generated files need to placed.
+7
+T1 Configuration
+Contains a list of queries required to join the MDM data with Pre-T1 data, prior to loading the data into T1 Tables. The data may be loaded directly or transformation logic(s) may be applied on the data.
+8
+T1 Master Sequence
+Contains information on the business rules (allocation, reallocation) and sales volume calculations which should be applied, the sequence in which the multiple business rules should be applied. 
+10
+T2 Object Configuration
+Contains a list of views and tables that describe the sequence in which the data should be loaded to T2 tables. 
+11
+DQ Rules
+Contains a list of data quality checks such as blank fields, duplicate source product entries, and unmapped columns, which will be applied once the data is processed to the final table. This step checks if the data is correct.
+
+
+File Sourcing
+The input files are procured from the above sources. These include the data files and mapping documents, which are usually in one of these formats: xlsx, csv, zip. The files are shared in a SFTP location by the business team. The frequency of these source files can be Daily, Weekly or Monthly depending on the information.
+Note: SFTP is a ‘Secure File Transfer Protocol’, used to securely transfer files over remote systems
+The source files provided in the SFTP will then be made available in the Landing path in an Amazon S3 bucket. Configuration Master table contains all the details which facilitate the movement of files from SFTP, Stage, Pre-T1 and T1 details. 
+Note: An Amazon S3 bucket is a cloud storage offering in which the raw data objects are stored.
+A copy of the source files is first archived without making any changes to them for historical reference.
+File Extraction 
+The details of every batch run for every source file is maintained in the Parent Batch Process table.
+Once a copy is archived, the original source files, which are in zipped or other formats, need to be fetched and unzipped. Predefined ETL processes, using a tool called Databricks, are then applied to extract the required data from the source files. 
+Note: Databricks serves as the computational engine and can process data even in huge volumes at a time.
+Both MDM and Sales data will be extracted from the source files, which are sent to the respective teams. The steps which follow are applied on the Sales data received by this team.
+Using the S3 bucket as a Path, Stage tables are created in Delta Lake. The data is then parsed to these newly-created Stage tables in Delta Lake (henceforth referred to as ‘Delta’).
+Note: Delta Lake is an additional storage layer that is made to run on the existing Amazon S3 bucket.
+
+File Quality Check
+At this stage, a file quality check is performed to ensure the quality of the data in the file. The following checks are made:
+Is the file structure the same as discussed earlier? – All columns are in place in the previously-agreed upon format with the affiliate
+Are the data formats processable? – File is in one of the three formats specified previously
+Is the data valid? – Data in the file matsches required type/format of data
+
+ Based on the above checks, each file falls into one of the following 3 categories: 
+
+High Priority Errors – File will not be processed; Business team is notified by email to send error-free file
+Medium Priority Errors – Errors are not removed, file is processed; Business team is notified by email of the incident
+Low Priority Errors – Errors are removed, file is processed; Business team is notified by email of the incident
+Pre-T1 Process
+From the Stage tables, data needs to be loaded to a Pre-T1 Delta Table. The Pre-T1 Delta table is a comprehensive table with data from all the countries that were onboarded the GDnA system. However, the data files received from each country vary in their formats and structures. 
+In order to successfully move the required data (a specific list of columns depending on granularity) to the right Pre-T1 table, a Sales Mapping configuration file is used. The Sales Mapping configuration file contains the logic which facilitates the movement of correct data from the Stage table into its respective place in the Pre-T1 table.
+The Pre-T1 table contains historic data and is fully loaded at any given point in time. Each load of new data to Pre-T1 replaces the existing files for same time period, if any.
+The details of the processed delivery files are maintained in the File Process log table.
+For Example: 
+Country A already has files from Jan’19 to Nov’19 in Pre-T1
+In Dec’19, the affiliate sends new, updated files from Sep’19 to Dec’19
+Old files for Sep’19, Oct’19 and Nov’19 get replaced by new files sent by affiliate for the same months
+New file sent by affiliate for Dec’19 gets added to Country A Pre-T1
+Follow standard names for Active_flag, Frequency and s3_landing_path columns in Configuration table.
+T1 Process 
+Pre-T1 Delta tables have now been created and contain the full load of data. However, the source data files may be missing some crucial information such as Brand Name, Brand ID, Product Composition, Customer details or Geographic details. As a result, these details will also be missing from the Pre-T1 Delta and T1 Delta tables. 
+In order to populate the tables with the missing information, two documents are needed:
+		
+MDM Table 
+A look-up of the MDM table is performed while copying the data from Pre-T1 Delta to T1 Delta table. For the lookup, the missing details from the source data file need to be present in the MDM table i.e. Product, Geography, Sales Channel, Organization and so on. 
+Note: If the missing data is not available in the MDM table, the Business team needs to be contacted and asked to refresh the MDM table.
+
+Mapping Document 
+A mapping document is used in the T1 process as well; it contains information on:
+How to map the missing columns in source data files to the columns in the MDM table using Product ID
+  How to map the columns in Source file to the columns in Pre-T1
+  How to map the columns in Pre-T1 to the columns in T1
+Note: If the Mapping document is not provided, the Business team needs to be contacted. The Mapping Document template is made available in the Box location, which can be shared with the Business team. The Product, Customer and Geography details can then be populated in the template by the Business team.
+When the process is complete, the T1 Delta table contains the full, historic and updated data from the Pre-T1 Delta table, with the newly added columns from the MDM data.
+For Example:
+Country A already has files from Jan’19 to Nov’19 in T1
+In Dec’19, the Pre-T1 table is updated for the months of Sep’19 to Dec’19
+All files for Sep’19 to Dec’19 get updated in T1
+T2 process
+The data has now been made available in the T1 Delta tables. In order to load the data to the T2 Delta Table, the following documents are required:
+Business Rules file – Contains the following business rules which need to be applied on the T1 Delta table:
+Allocation – Product’s cure type details
+For Example:
+If Product A can be sold for 3 therapeutic areas, the allocation file will provide the logic to categorize the number of sales of Product A for each one of the 3 therapeutic areas.
+Re-allocation – Product’s Geography/Territory level details
+		For Example: 
+		If Product A is sold to multiple regions via a distributor based in one region, the re-allocation file will provide the logic to categorize the number of sales of Product A in each region.
+Sequence File - Specifies the rules to be applied and in what order they need to be applied. In practice, the first business rule is applied on the T1 Delta table, and the second is applied on the result of the first. 
+Once the Business Rules are applied, the Product Conversion Factor is applied wherever Sales/Pricing data is calculated. 
+The details of processed Business Rules files (allocation and reallocation) are maintained in the Business Rules File log table.
+For Example: 
+The price specified might be for one Strip of Product A, with each Strip containing 8 Tablets. The conversion factor will have to be applied if the data is recorded at Tablet level, instead of Strip level.
+Note: If no Business Rules are applicable, then T1 Delta table data is directly pushed to T2 Delta table.
+Redshift Tables
+The T2 Delta tables have been created and loaded with data. This data is then copied from the T2 Delta table to Redshift tables. 
+Note: Redshift is a cloud-based, data warehousing service offered by Amazon. Data is provided for user consumption via analyses, reports, dashboards, etc. in Redshift.
+Redshift provides three different schemas:
+Staging – Staging layer is used for data storage and development. Stage user access is available to the developers to create code, make changes and check output.
+Reporting – Reporting layer allows clients to view data. Users with access to reporting schema will be able to view the final tables in Redshift. However, no edit access is provided.
+SAM – Security layer allows data to be restricted on a row level (data for each user) or column level (categories of data) by applying the SAM Schema on top of existing Redshift tables. This layer facilitates granting access to the user in order for them to view data at Regional Redshift level. 
+  The following Redshift tables are created in this process:
+Global Redshift Tables
+The first move from T2 Delta Table is to the Global Redshift table. The Global Redshift table contains the data for all the countries which have been onboarded. At this stage, a data quality check is performed to ensure that the process has been executed correctly.
+Regional Redshift Tables 
+From the Global Redshift Table, data is filtered and placed in one of the three Cluster-wise Redshift tables - JAPAC, ICON and EU. This data is directly accessed by the client. The process involves the use of a Data Warehouse (DWH) Configuration table. 
+A DWH Configuration table provides details of the tables which should be made available in each Regional Redshift cluster. It works like a country-wise filter for clients from different geographies to access relevant data.
+Post Data Quality Check Process
+The Transaction and MDM data from Delta Tables is used as a source for the Data Quality Check process. This process aims to identify the records which do not match a given set of rules. These records are termed as ‘Data Quality Check Records’ and are loaded to a specific table depending on the DQ rule that they do not match.
+An entry is made in the DQ Rules Table for each DQ Rule. Each DQ rule contains an SQL Query, Rule Name, Source System, Region, Country Code, Active Flag and the target table (to which the Data Quality Check records need to be loaded to). 
+An entry is also made in the DQ Rules Control Table, which is used to identify which countries, rule name and source system data should and should not be subjected to the Data Quality check. When the DAG pertaining to the DQ Check is triggered, the SQL query is run and the Data Quality Check Records are loaded to their respective tables.
+The above process is applicable to both Sales and MCM data.
+Data Analytics 
+The GDnA platform is integrated with Tableau for data dashboarding. Clients consume the data provided in the dashboard to make decisions related to product pricing, resources allocation, and so on.
+Note: Tableau is a data visualization tool which can be used to create customized dashboards.
+For Example: 
+When the sales representative reaches out to a defined set of customers, such as doctors, pharmacies, or wholesale dealers, he requires some critical data, based on which he can make an informed sale. Such critical data could be the price of the product in the specified area, the current demand for the drug, the percentage of discount that lies in the hands of the representative, and so on. These are provided as reports, charts and figures on the dashboard customized for the client.
+The various tables involved in the GDnA process are depicted below:
+
+Continuous Development / Continuous Integration
+For the entire process to run smoothly, from the time of file upload to SFTP to the report generation in Tableau, a backend CD/CIs process is required. 
+The different stages of the CD/CI process are:
+Requirement gathering
+Development
+User Acceptance Testing (UAT)
+Production
+This CI/CD process is managed using GitLab and Airflow.
+Note: GitLab is a code repository and collaborative software development platform for DevOps projects. 
+Airflow is a work-flow management software which works with the help of Directed Acyclic Graphs (DAGs). A DAG takes care of what process to bring into action, when, after what event occurs – thus allowing for scheduling and monitoring the process.
+
+Any update to code is maintained in the GitLab repository after being tested. Airflow pulls this code change from the GitLab repository and moves it to the corresponding development environment, thus automating the process flow. The Airflow DAGs are programmed to take care of handling data between Databricks and Redshift environments. 
+It is important to ensure that the complete process runs clean, when any change is made to any code. 
+Sales Sprint Action
+The project follows the Agile methodology, and work is carried out in predetermined time intervals called Sprints.  Currently, each Sprint is for a duration of 3 weeks (15 working days) with the following weekly breakup:
+Week 1 – Development
+Week 2 – UAT Deployment
+Week 3 – UAT sign-off and Production deployment
+Week 4 – (1st day) Production go-live
+All related project management is carried out via the tool JIRA. 
+EU/MVP – DAG & Job Details
+EU/MDM
+Jobs
+Category
+Start Time
+Avg Time
+Comments
+EU
+Load_GDNA_MCM_Veeva_CDM_CEP_EU
+MCM
+12:01 AM PST
+10 Min
+
+
+EU
+Load_GDNA_MCM_Veeva_EU
+MCM
+12:16 AM PST
+2 Hr 30 Min
+
+
+EU
+Load_GDNA_Sales_ITM_EU
+ITM_Sales
+04:30 PM PST
+3 Hr
+File Quality runs for Nordics task
+EU
+Load_GDNA_TTM_Global_EU
+TTM_Sales
+08:45 PM PST
+3 Hr
+
+
+EU
+Load_GDNA_Product_MDM_Inbound_EU
+ITM Inbound Job
+04:00 AM PST
+45 Min
+File Quality runs for Nordics task
+EU
+Load_GDNA_GA360_EU
+Google Analytics
+10:30 PM PST
+45 Min
+
+
+EU
+Load_GDNA_Germany_BR_SFTP_Load
+EU Export Job
+02:00 PM PST
+18 Min
+
+
+EU
+GDNA_DQ_Framework_daily
+Data Quality
+06:00 PM PST
+8 Min
+
+
+EU
+Load_GDNA_Anaplan_EU_Import
+Anaplan
+12:01 AM PST
+5 Min
+
+
+MDM
+Load_GDNA_MDM_Global
+MDM
+09:30 AM PST
+2 Hr
+MDM Refresh from Oracle to Redshift
+
+Tools Required & Key Activities
+The tools required and key actions to be undertaken in each stage of the project are described in the coming sections.
+Requirement Gathering
+To get started with the Requirement Analysis process, the below-mentioned tools and/or software are required.
+Prerequisites
+Access to the AMGEN Workspace and onboarding as a staff to the AMGEN platform is the first step. The AMGEN Workspace document in the resources section will serve as a guide through this process. Post AMGEN access, access to the following tools needs to be ensured:
+BOX 
+Access link for BOX – used for file storage and collaborations
+	https://amgen.account.box.com <https://amgen.account.box.com/> 
+Access will be provided by Business Team
+AWS – S3 and Redshift 
+Access link for AWS S3 
+https://onecloud.amgen.com/ConsoleAWS# <https://onecloud.amgen.com/ConsoleAWS>
+For Redshift access, Aginity Workbench needs to be installed and connection details will be provided by peers
+CDM Oracle 
+Database connection details will be provided by peers
+Development
+To get started with Development, the following tools are required:
+Databricks
+https://gco-us-analytics.cloud.databricks.com <https://gco-us-analytics.cloud.databricks.com/>
+	Access will be provided by the Reporting Manager
+Development Cluster access must be provided in the development environment
+GitLab
+https://gitlab-gcoisgdna.devops.amgen.com/users/sign_in
+Access will be provided by Technical Lead/Architect
+Airflow
+http://gdna-airflow-dev.amgen.com:8080/home
+	Access will be provided by Technical Lead/Architect
+TTM DAG
+DAG Loads data of AMGEN to T1 and T2 Table using Load_GDNA_T2_Sales_TTM_EU
+ITM DAG
+DAG Loads data of non-AMGEN data from file to T1 to T2 Table - Load_GDNA_Sales_ITM_EU
+DAG Loads data of non-AMGEN data from file to T1 Table - Load_GDNA_Sales_ITM_EU_T1
+Redshift
+Dev
+uid=stage 
+pwd=Spring2@16
+jdbc: eucrp01-cep-uat.cpjykdr8nif6.us-west-2.redshift.amazonaws.com
+UAT
+uid=stage 
+pwd=Spring2@16
+jdbc: eucrp01.cpjykdr8nif6.us-west-2.redshift.amazonaws.com
+Prod
+Global Prod
+uid=gdna_read 
+pwd=1CanPlayHere
+jdbc: global-dna-japac.cpjykdr8nif6.us-west-2.redshift.amazonaws.com
+EU Prod
+uid= report
+pwd=4DevsOnly
+jdbc: eucrp01.cnlg7vahpmgn.eu-central-1.redshift.amazonaws.com
+Sprint Release Items
+Understanding the business requirements carefully and chalking out sprint tasks in line with the requirements is crucial.
+For every sprint release, the developer will have to fill in the latest information in the following checklists and hand it over to the respective leads or product owners.
+Sprint Release Items – Code/code changes that need to go into production for the sprint
+Code Components Checklist – Notebooks, box locations and other files (if any) related to development
+Code Review Checklist – Tests to ensure code will not fail in production. Each of the method tests need to be performed accurately, multiple times.
+Validation Sheet – Result of all tests that have been run on development. This will have to be validated in UAT again. The code must work individually and when integrated with the system, at this checkpoint.
+UAT
+User Acceptance Testing is performed to verify if the implementation is in line with the business requirements. 
+All code must be moved to UAT well within timelines and must be thoroughly tested 	for all functionality, including negative testcases. 
+Respective DAGs must be triggered at least twice. 
+All scenarios listed in the validation sheet must be tested 2 or 3 times, and the updated code must not affect any other functionality.
+UAT must be considered akin to production deployment and must be evaluated with utmost care. Post all checks, Validation sheet is prepared and reviewed with the client. Client-signoff is a must to move the code to production.
+Production
+Post development, the newly developed code needs to be merged in GitLab.
+Additional Resources
+AMGEN EU Sales Framework Walkthrough 
+Provides a basic overview of the GDnA Framework
+Link to recorded video - https://web.microsoftstream.com/video/c1b0e661-ed83-4638-92ec-528bd5a262cb
+Overview of the different tables in GDnA 
+Details the different target tables and how data flows into each of these
+
+Link to pdf – 
+Business Process Understanding
+Provides a deeper view of the Technical Process of the data flow.
+Link to recorded audio - https://msvlforagileiss-my.sharepoint.com/:f:/r/personal/saikirthika_krishnamoorthy_agilisium_com/Documents/Amgen%20KT?csf=1&web=1&e=j5qjWw
+Technical Supplement Document
+Describes the country-specific technical data flow from Delivery source system to Global Redshift Tables.
+Technical Supplement Documents for all onboarded countries can be found here: 
+https://amgen.box.com/s/7bv3hgc9rafee06cvlkslwodi2jnh9jl
+Raising JIRA Access
+Describes the process of raising a ticket to enable JIRA board access for a new User.
+SAM Schema Process Document
+Contains details about SAM Schema security which enables secured access for the data in the Redshift Database. Access to database objects such as tables and views is controlled by user accounts, with different security levels for each, as described in the previous sections.
+AMGEN Products Walkthrough
+Link to recorded session by Pranav Bhandarkar about the different products that AMGEN develops, their constituents, usage and dosage.
+Session 1:https://web.microsoftstream.com/video/3f1bb02d-e15c-477b-8fa4-5967e423d5b7
+Session 2: https://web.microsoftstream.com/video/bf125a27-dff9-4abb-a438-52cd62d2c3fd
+ITM Process in Detail
+
+Vistex Process
+
+Code Repository
+An exhaustive list of all Notebooks, Airflow DAGs, and INI files used in the GDnA EU system, along with their respective GitLab links can be found in the Code Repository section of Confluence here: EU Code Repository - GCO DTI-GDNA - Devops Confluence (amgen.com) 
+Appendix
+The various brands in Amgen’s portfolio along with their intended therapeutic area is listed below:
+S.No.
+Brand
+Amgen Therapeutic Area
+1
+Aimovig
+Neurology
+2
+Aranesp
+Nephrology, Oncology/Hematology
+3
+Blincyto
+Oncology/Hematology
+4
+Corlanor
+Cardiovascular
+5
+Enbrel
+Inflammation
+6
+Epogen
+Nephrology
+7
+Evenity
+Bone
+8
+Imlygic
+Oncology/Hematology
+9
+Kanjinti
+Oncology/Hematology
+10
+Kyprolis
+Oncology/Hematology
+11
+Mvasi
+Oncology/Hematology
+12
+Neulasta
+Oncology/Hematology
+13
+Neupogen
+Oncology/Hematology
+14
+Nplate
+Oncology/Hematology
+15
+Otezla
+Inflammation
+16
+Prasabiv
+Nephrology
+17
+Prolia
+Bone
+18
+Repatha
+Cardiovascular
+19
+Sensipar/Mimpara
+Nephrology
+20
+Vectibix
+Oncology/Hematology
+21
+Xgeva
+Oncology/Hematology
+22
+Avsola
+Inflammation
+23
+Amgevita
+Inflammation
+
+
+
+
+
+
